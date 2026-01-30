@@ -1,0 +1,37 @@
+{
+    "name": "@pomerun/iso-3166-1",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "国家或地区 ISO 3166-1 代码",
+    "author": {
+        "name": "Pomerun",
+        "url": "https://pome.run"
+    },
+    "sideEffects": false,
+    "license": "MIT",
+    "main": "./build/index.cjs",
+    "module": "./build/index.js",
+    "types": "./build/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./build/index.js",
+            "require": "./build/index.cjs"
+        },
+        "./package.json": "./package.json"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/pomerun/iso-3166-1.git"
+    },
+    "files": [
+        "build"
+    ],
+    "scripts": {
+        "build": "tsdown",
+        "up": "pnpm update -i --latest"
+    },
+    "devDependencies": {
+        "tsdown": "^0.20.1",
+        "typescript": "^5.9.3"
+    }
+}

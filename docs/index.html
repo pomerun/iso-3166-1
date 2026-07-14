@@ -83,7 +83,7 @@
     }
     .panel-head{padding:24px 28px 0;}
     .panel-head h2{
-        margin:0 0 6px;
+        margin:0;
         font-size:18px;
         display:flex;
         align-items:center;
@@ -149,11 +149,12 @@
         overflow:auto;
     }
     .table-wrap.scrollable{max-height:420px;}
-    table{width:100%;border-collapse:collapse;font-size:14px;}
+    table{width:100%;min-width:480px;border-collapse:collapse;font-size:14px;}
     thead th{
         position:sticky;
         top:0;
         background:#f7f8fc;
+        white-space:nowrap;
         text-align:left;
         font-weight:600;
         padding:10px 14px;
@@ -163,7 +164,7 @@
         letter-spacing:.02em;
         text-transform:uppercase;
     }
-    tbody td{padding:9px 14px;border-bottom:1px solid #f0f1f6;}
+    tbody td{padding:9px 14px;border-bottom:1px solid #f0f1f6;white-space:nowrap;}
     tbody tr:last-child td{border-bottom:none;}
     tbody tr:hover{background:#f8f8ff;}
     .empty-row{text-align:center;color:var(--color-text-muted);padding:24px !important;}
@@ -199,6 +200,62 @@
     }
     .result-grid strong{font-size:16px;}
 
+    .install-tabs{display:flex;gap:8px;flex-wrap:wrap;}
+    .install-tab-btn{
+        background:#f7f8fc;
+        color:var(--color-text-muted);
+        border:1px solid var(--color-border);
+        font-weight:600;
+        padding:8px 16px;
+    }
+    .install-tab-btn.is-active{background:var(--color-primary);color:#fff;border-color:var(--color-primary);}
+    .install-panel{display:none;flex-direction:column;gap:10px;}
+    .install-panel.is-active{display:flex;}
+
+    .api-doc{
+        border:1px solid var(--color-border);
+        border-radius:var(--radius-md);
+        background:#fafbff;
+        padding:0 14px;
+    }
+    .api-doc summary{
+        cursor:pointer;
+        padding:10px 0;
+        font-size:13px;
+        font-weight:600;
+        color:var(--color-primary-dark);
+        list-style:none;
+    }
+    .api-doc summary::-webkit-details-marker{display:none;}
+    .api-doc summary::before{content:"▸ ";}
+    .api-doc[open] summary::before{content:"▾ ";}
+    .api-doc-body{padding:0 0 14px;display:flex;flex-direction:column;gap:10px;}
+    .api-table-wrap{overflow-x:auto;}
+    .api-table{width:100%;min-width:420px;border-collapse:collapse;font-size:13px;}
+    .api-table th,.api-table td{padding:6px 10px;border-bottom:1px solid var(--color-border);text-align:left;}
+    .api-table th{color:var(--color-text-muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.02em;font-weight:600;}
+    .api-return{margin:0;font-size:13px;color:var(--color-text-muted);}
+    .api-return code{font-family:var(--font-mono);background:#eef0fb;color:var(--color-primary-dark);padding:2px 6px;border-radius:6px;}
+
+    .env-note{
+        margin:14px 0 0;
+        font-size:13px;
+        color:rgba(255,255,255,.75);
+    }
+    .standards-note{
+        list-style:none;
+        margin:0 0 20px;
+        padding:0;
+        display:flex;
+        flex-direction:column;
+        gap:4px;
+        font-size:13px;
+        color:rgba(255,255,255,.75);
+    }
+    .standards-note a{
+        color:inherit;
+    }
+
     footer{text-align:center;padding:32px 24px 48px;color:var(--color-text-muted);font-size:13px;}
 
     @media (max-width:640px){
@@ -207,7 +264,7 @@
         .panel-head{padding:20px 20px 0;}
         .panel-body{padding:16px 20px 22px;}
         .exact-controls{flex-direction:column;}
-        .exact-controls select,.exact-controls input,.exact-controls button{width:100%;}
+        .exact-controls select,.exact-controls input,.exact-controls button{width:100%;flex:none;}
     }
 </style>
 </head>
@@ -217,20 +274,104 @@
         <span class="eyebrow">@pomerun/iso-3166-1</span>
         <h1>国家或地区 ISO 3166-1 代码</h1>
         <p class="subtitle">共收录 <strong id="totalCount">--</strong> 个国家或地区，支持名称模糊搜索及 Alpha-2 / Alpha-3 / Numeric 代码精确查询</p>
+        <ul class="standards-note">
+            <li>等效于：</li>
+            <li>《世界各国和地区及其行政区划名称代码 第1部分：国家和地区代码》 <a href="https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=FBCE39BE204B54F6F944092C209121F2" target="_blank">GB/T 2659.1-2022</a></li>
+            <li>「國家名稱代碼表示法」 <a href="https://www.cnsonline.com.tw/?node=detail&generalno=12842" target="_blank">CNS 12842</a></li>
+        </ul>
         <div class="badges">
             <a href="https://github.com/pomerun/iso-3166-1" target="_blank" rel="noopener">GitHub 仓库</a>
             <a href="https://github.com/pomerun/iso-3166-1/pkgs/npm/iso-3166-1" target="_blank" rel="noopener">npm package</a>
         </div>
+        <p class="env-note">支持环境：Node.js ≥ 21 · Chrome ≥ 117（更低版本需自行根据框架处理降级或 polyfill）</p>
     </div>
 </header>
 
 <main>
     <section class="panel">
         <div class="panel-head">
+            <h2>安装与引用</h2>
+        </div>
+        <div class="panel-body">
+            <div class="install-tabs" role="tablist">
+                <button type="button" class="install-tab-btn is-active" data-tab="script">Script</button>
+                <button type="button" class="install-tab-btn" data-tab="esm">ES Module</button>
+                <button type="button" class="install-tab-btn" data-tab="cjs">CommonJS</button>
+            </div>
+
+            <div class="install-panel is-active" data-panel="script">
+                <pre class="code-preview"><code>&lt;script src="build/index.iife.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+    const iso3166_1 = new ISO3166_1();
+
+    iso3166_1.list; // 全部国家或地区列表
+    iso3166_1.find("法国"); // 获取与 法国 相关的 ISO 3166-1 代码
+&lt;/script&gt;</code></pre>
+            </div>
+
+            <div class="install-panel" data-panel="esm">
+                <pre class="code-preview"><code>npm i @pomerun/iso-3166-1 --registry=https://npm.pkg.github.com</code></pre>
+                <pre class="code-preview"><code>import ISO3166_1 from "@pomerun/iso-3166-1";
+
+const iso3166_1 = new ISO3166_1();
+
+iso3166_1.list; // 全部国家或地区列表
+iso3166_1.find("法国"); // 获取与 法国 相关的 ISO 3166-1 代码</code></pre>
+            </div>
+
+            <div class="install-panel" data-panel="cjs">
+                <pre class="code-preview"><code>npm i @pomerun/iso-3166-1 --registry=https://npm.pkg.github.com</code></pre>
+                <pre class="code-preview"><code>const ISO3166_1 = require("@pomerun/iso-3166-1");
+
+const iso3166_1 = new ISO3166_1();
+
+iso3166_1.list; // 全部国家或地区列表
+iso3166_1.find("法国"); // 获取与 法国 相关的 ISO 3166-1 代码</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h2>全部列表 <code>list</code></h2>
+        </div>
+        <div class="panel-body">
+            <details class="api-doc" open>
+                <summary>API 说明</summary>
+                <div class="api-doc-body">
+                    <p class="api-return">类型：<code>Country[]</code></p>
+                </div>
+            </details>
+            <div class="table-wrap scrollable">
+                <table>
+                    <thead><tr><th>名称</th><th>Alpha-2</th><th>Alpha-3</th><th>Numeric</th></tr></thead>
+                    <tbody id="listTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
             <h2>模糊搜索 <code>find(name)</code></h2>
             <p>根据国家或地区名称、Alpha-2、Alpha-3、Numeric 代码进行模糊匹配</p>
         </div>
         <div class="panel-body">
+            <details class="api-doc" open>
+                <summary>API 说明</summary>
+                <div class="api-doc-body">
+                    <p class="api-return">类型：<code>function</code></p>
+                    <div class="api-table-wrap">
+                        <table class="api-table">
+                            <thead><tr><th>参数名</th><th>类型</th><th>是否可选</th><th>默认值</th><th>说明</th></tr></thead>
+                            <tbody>
+                                <tr><td>name</td><td>string</td><td>否</td><td>-</td><td>国家或地区名称、ISO 3166-1 代码</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="api-return">返回值：<code>Country[]</code></p>
+                </div>
+            </details>
             <input type="text" id="findInput" placeholder="例如：法国 / FR / FRA / 250" value="法国">
             <pre class="code-preview"><code id="findCode">iso3166_1.find("法国");</code></pre>
             <div class="table-wrap">
@@ -248,6 +389,10 @@
             <p>使用 findOne / findByAlpha2 / findByAlpha3 / findByNumeric 精确匹配单个国家或地区</p>
         </div>
         <div class="panel-body">
+            <details class="api-doc" open>
+                <summary>API 说明</summary>
+                <div class="api-doc-body" id="exactApiDoc"></div>
+            </details>
             <div class="exact-controls">
                 <select id="exactMethod">
                     <option value="findOne">findOne（名称）</option>
@@ -262,22 +407,6 @@
             <div class="result-card" id="exactResult"></div>
         </div>
     </section>
-
-    <section class="panel">
-        <div class="panel-head">
-            <h2>全部列表 <code>list</code></h2>
-            <p>共 <span id="listCount">--</span> 条记录，可在下方输入内容进行本地筛选</p>
-            <input type="text" id="listFilter" placeholder="筛选列表，例如：中国 / CN">
-        </div>
-        <div class="panel-body">
-            <div class="table-wrap scrollable">
-                <table>
-                    <thead><tr><th>名称</th><th>Alpha-2</th><th>Alpha-3</th><th>Numeric</th></tr></thead>
-                    <tbody id="listTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </section>
 </main>
 
 <footer>
@@ -289,7 +418,6 @@
     const iso3166_1 = new ISO3166_1();
 
     document.getElementById("totalCount").textContent = iso3166_1.list.length;
-    document.getElementById("listCount").textContent = iso3166_1.list.length;
 
     function renderRows(tbody, items) {
         if (!items || items.length === 0) {
@@ -324,11 +452,36 @@
     const exactBtn = document.getElementById("exactBtn");
     const exactCode = document.getElementById("exactCode");
     const exactResult = document.getElementById("exactResult");
+    const exactApiDoc = document.getElementById("exactApiDoc");
+
+    const EXACT_API_DOCS = {
+        findOne: { param: "name", desc: "国家或地区名称" },
+        findByAlpha2: { param: "code", desc: "ISO 3166-1 Alpha-2 代码" },
+        findByAlpha3: { param: "code", desc: "ISO 3166-1 Alpha-3 代码" },
+        findByNumeric: { param: "code", desc: "ISO 3166-1 Numeric 代码" }
+    };
+
+    function renderExactApiDoc(method) {
+        const doc = EXACT_API_DOCS[method];
+        exactApiDoc.innerHTML = `
+            <p class="api-return">类型：<code>function</code></p>
+            <div class="api-table-wrap">
+                <table class="api-table">
+                    <thead><tr><th>参数名</th><th>类型</th><th>是否可选</th><th>默认值</th><th>说明</th></tr></thead>
+                    <tbody>
+                        <tr><td>${doc.param}</td><td>string</td><td>否</td><td>-</td><td>${doc.desc}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="api-return">返回值：<code>Country</code></p>
+        `;
+    }
 
     function runExact() {
         const method = exactMethod.value;
         const value = exactInput.value.trim();
         exactCode.textContent = `iso3166_1.${method}(${JSON.stringify(value)});`;
+        renderExactApiDoc(method);
 
         if (!value) {
             exactResult.innerHTML = '<p class="empty">请输入查询内容</p>';
@@ -349,15 +502,24 @@
     exactMethod.addEventListener("change", runExact);
     exactInput.addEventListener("keydown", e => { if (e.key === "Enter") runExact(); });
 
+    // 安装与引用示例的页签切换
+    const installTabButtons = document.querySelectorAll(".install-tab-btn");
+    const installPanels = document.querySelectorAll(".install-panel");
+    installTabButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            installTabButtons.forEach(b => b.classList.remove("is-active"));
+            installPanels.forEach(p => p.classList.remove("is-active"));
+            btn.classList.add("is-active");
+            document.querySelector(`.install-panel[data-panel="${btn.dataset.tab}"]`).classList.add("is-active");
+        });
+    });
+
     // 全部列表 list
-    const listFilter = document.getElementById("listFilter");
     const listTableBody = document.getElementById("listTableBody");
 
     function renderList() {
-        const value = listFilter.value.trim();
-        renderRows(listTableBody, value ? iso3166_1.find(value) : iso3166_1.list);
+        renderRows(listTableBody, iso3166_1.list);
     }
-    listFilter.addEventListener("input", renderList);
 
     // 初始化页面状态
     runFind();

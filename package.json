@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "type": "module",
     "description": "国家或地区 ISO 3166-1 代码",
+    "homepage": "https://pomerun.github.io/iso-3166-1",
     "author": {
         "name": "Pomerun",
         "url": "https://pome.run"

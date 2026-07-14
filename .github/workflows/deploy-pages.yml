@@ -1,0 +1,43 @@
+name: Deploy GitHub Pages
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'build/index.iife.js'
+            - 'docs/**'
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+concurrency:
+    group: pages
+    cancel-in-progress: true
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v6
+            -   name: Assemble site
+                run: |
+                    mkdir -p _site/build
+                    cp build/index.iife.js _site/build/index.iife.js
+                    sed 's#\.\./build/index\.iife\.js#build/index.iife.js#' docs/index.html > _site/index.html
+            -   name: Setup Pages
+                uses: actions/configure-pages@v5
+            -   name: Upload artifact
+                uses: actions/upload-pages-artifact@v4
+                with:
+                    path: _site
+            -   name: Deploy to GitHub Pages
+                id: deployment
+                uses: actions/deploy-pages@v4

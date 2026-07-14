@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>ISO 3166-1 · 国家或地区代码</title>
+<meta name="description" content="@pomerun/iso-3166-1 国家或地区 ISO 3166-1 代码">
+<style>
+    :root{
+        --color-primary:#4f46e5;
+        --color-primary-dark:#4338ca;
+        --color-bg:#f4f5fb;
+        --color-surface:#ffffff;
+        --color-border:#e4e7f1;
+        --color-text:#1e2233;
+        --color-text-muted:#6b7280;
+        --radius-lg:16px;
+        --radius-md:10px;
+        --shadow-card:0 1px 2px rgba(16,24,40,.04), 0 8px 24px -12px rgba(16,24,40,.12);
+        --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Helvetica,Arial,sans-serif;
+        --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;}
+    body{
+        margin:0;
+        font-family:var(--font-sans);
+        background:var(--color-bg);
+        color:var(--color-text);
+        line-height:1.55;
+        -webkit-font-smoothing:antialiased;
+    }
+    a{color:var(--color-primary);text-decoration:none;}
+    a:hover{text-decoration:underline;}
+
+    .hero{
+        background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 55%,#6366f1 100%);
+        color:#fff;
+        padding:64px 24px 88px;
+        text-align:center;
+    }
+    .hero-inner{max-width:760px;margin:0 auto;}
+    .eyebrow{
+        display:inline-block;
+        font-size:13px;
+        font-weight:600;
+        letter-spacing:.04em;
+        background:rgba(255,255,255,.15);
+        padding:4px 12px;
+        border-radius:999px;
+        margin-bottom:16px;
+    }
+    .hero h1{font-size:clamp(26px,4vw,36px);margin:0 0 12px;font-weight:700;}
+    .hero .subtitle{font-size:15px;color:rgba(255,255,255,.85);margin:0 0 24px;}
+    .hero .subtitle strong{color:#fff;font-size:17px;}
+    .badges{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .badges a{
+        color:#fff;
+        border:1px solid rgba(255,255,255,.4);
+        padding:8px 18px;
+        border-radius:999px;
+        font-size:14px;
+        font-weight:500;
+        transition:background .15s ease,border-color .15s ease;
+    }
+    .badges a:hover{background:rgba(255,255,255,.15);text-decoration:none;border-color:rgba(255,255,255,.7);}
+
+    main{
+        max-width:960px;
+        margin:-48px auto 64px;
+        padding:0 24px;
+        display:flex;
+        flex-direction:column;
+        gap:24px;
+        position:relative;
+    }
+
+    .panel{
+        background:var(--color-surface);
+        border:1px solid var(--color-border);
+        border-radius:var(--radius-lg);
+        box-shadow:var(--shadow-card);
+        overflow:hidden;
+    }
+    .panel-head{padding:24px 28px 0;}
+    .panel-head h2{
+        margin:0 0 6px;
+        font-size:18px;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        flex-wrap:wrap;
+    }
+    .panel-head h2 code{
+        font-family:var(--font-mono);
+        font-size:13px;
+        background:#eef0fb;
+        color:var(--color-primary-dark);
+        padding:2px 8px;
+        border-radius:6px;
+    }
+    .panel-head p{margin:0;font-size:13.5px;color:var(--color-text-muted);}
+    .panel-head input[type=text]{margin-top:14px;}
+    .panel-body{padding:20px 28px 28px;display:flex;flex-direction:column;gap:16px;}
+
+    input[type=text],select,button{
+        font:inherit;
+        border:1px solid var(--color-border);
+        border-radius:var(--radius-md);
+        padding:10px 14px;
+        background:#fff;
+        color:var(--color-text);
+    }
+    input[type=text]{width:100%;}
+    input[type=text]:focus,select:focus{
+        outline:none;
+        border-color:var(--color-primary);
+        box-shadow:0 0 0 3px rgba(79,70,229,.15);
+    }
+    button{
+        background:var(--color-primary);
+        color:#fff;
+        border-color:var(--color-primary);
+        cursor:pointer;
+        font-weight:600;
+        transition:background .15s ease;
+        white-space:nowrap;
+    }
+    button:hover{background:var(--color-primary-dark);}
+
+    .exact-controls{display:flex;gap:10px;flex-wrap:wrap;}
+    .exact-controls select{flex:0 0 auto;}
+    .exact-controls input{flex:1 1 220px;}
+
+    .code-preview{
+        margin:0;
+        background:#1e2233;
+        color:#e2e4f3;
+        border-radius:var(--radius-md);
+        padding:12px 16px;
+        font-family:var(--font-mono);
+        font-size:13px;
+        overflow-x:auto;
+    }
+    .code-preview code{color:#a5b4fc;}
+
+    .table-wrap{
+        border:1px solid var(--color-border);
+        border-radius:var(--radius-md);
+        overflow:auto;
+    }
+    .table-wrap.scrollable{max-height:420px;}
+    table{width:100%;border-collapse:collapse;font-size:14px;}
+    thead th{
+        position:sticky;
+        top:0;
+        background:#f7f8fc;
+        text-align:left;
+        font-weight:600;
+        padding:10px 14px;
+        border-bottom:1px solid var(--color-border);
+        color:var(--color-text-muted);
+        font-size:12.5px;
+        letter-spacing:.02em;
+        text-transform:uppercase;
+    }
+    tbody td{padding:9px 14px;border-bottom:1px solid #f0f1f6;}
+    tbody tr:last-child td{border-bottom:none;}
+    tbody tr:hover{background:#f8f8ff;}
+    .empty-row{text-align:center;color:var(--color-text-muted);padding:24px !important;}
+    .code-pill{
+        font-family:var(--font-mono);
+        font-size:12.5px;
+        background:#eef0fb;
+        color:var(--color-primary-dark);
+        padding:2px 7px;
+        border-radius:6px;
+    }
+
+    .result-card{min-height:32px;}
+    .result-card .empty{color:var(--color-text-muted);font-size:14px;margin:0;padding:8px 0;}
+    .result-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+        gap:12px;
+    }
+    .result-grid > div{
+        background:#f7f8fc;
+        border:1px solid var(--color-border);
+        border-radius:var(--radius-md);
+        padding:10px 14px;
+    }
+    .result-grid span{
+        display:block;
+        font-size:11.5px;
+        color:var(--color-text-muted);
+        text-transform:uppercase;
+        letter-spacing:.03em;
+        margin-bottom:4px;
+    }
+    .result-grid strong{font-size:16px;}
+
+    footer{text-align:center;padding:32px 24px 48px;color:var(--color-text-muted);font-size:13px;}
+
+    @media (max-width:640px){
+        .hero{padding:48px 20px 72px;}
+        main{margin-top:-40px;padding:0 16px;}
+        .panel-head{padding:20px 20px 0;}
+        .panel-body{padding:16px 20px 22px;}
+        .exact-controls{flex-direction:column;}
+        .exact-controls select,.exact-controls input,.exact-controls button{width:100%;}
+    }
+</style>
+</head>
+<body>
+<header class="hero">
+    <div class="hero-inner">
+        <span class="eyebrow">@pomerun/iso-3166-1</span>
+        <h1>国家或地区 ISO 3166-1 代码</h1>
+        <p class="subtitle">共收录 <strong id="totalCount">--</strong> 个国家或地区，支持名称模糊搜索及 Alpha-2 / Alpha-3 / Numeric 代码精确查询</p>
+        <div class="badges">
+            <a href="https://github.com/pomerun/iso-3166-1" target="_blank" rel="noopener">GitHub 仓库</a>
+            <a href="https://github.com/pomerun/iso-3166-1/pkgs/npm/iso-3166-1" target="_blank" rel="noopener">npm package</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="panel">
+        <div class="panel-head">
+            <h2>模糊搜索 <code>find(name)</code></h2>
+            <p>根据国家或地区名称、Alpha-2、Alpha-3、Numeric 代码进行模糊匹配</p>
+        </div>
+        <div class="panel-body">
+            <input type="text" id="findInput" placeholder="例如：法国 / FR / FRA / 250" value="法国">
+            <pre class="code-preview"><code id="findCode">iso3166_1.find("法国");</code></pre>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>名称</th><th>Alpha-2</th><th>Alpha-3</th><th>Numeric</th></tr></thead>
+                    <tbody id="findTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h2>精确查询</h2>
+            <p>使用 findOne / findByAlpha2 / findByAlpha3 / findByNumeric 精确匹配单个国家或地区</p>
+        </div>
+        <div class="panel-body">
+            <div class="exact-controls">
+                <select id="exactMethod">
+                    <option value="findOne">findOne（名称）</option>
+                    <option value="findByAlpha2">findByAlpha2</option>
+                    <option value="findByAlpha3">findByAlpha3</option>
+                    <option value="findByNumeric">findByNumeric</option>
+                </select>
+                <input type="text" id="exactInput" placeholder="输入查询内容" value="法国">
+                <button id="exactBtn" type="button">查询</button>
+            </div>
+            <pre class="code-preview"><code id="exactCode">iso3166_1.findOne("法国");</code></pre>
+            <div class="result-card" id="exactResult"></div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h2>全部列表 <code>list</code></h2>
+            <p>共 <span id="listCount">--</span> 条记录，可在下方输入内容进行本地筛选</p>
+            <input type="text" id="listFilter" placeholder="筛选列表，例如：中国 / CN">
+        </div>
+        <div class="panel-body">
+            <div class="table-wrap scrollable">
+                <table>
+                    <thead><tr><th>名称</th><th>Alpha-2</th><th>Alpha-3</th><th>Numeric</th></tr></thead>
+                    <tbody id="listTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>MIT License · <a href="https://github.com/pomerun/iso-3166-1" target="_blank" rel="noopener">pomerun/iso-3166-1</a></p>
+</footer>
+
+<script src="../build/index.iife.js"></script>
+<script>
+    const iso3166_1 = new ISO3166_1();
+
+    document.getElementById("totalCount").textContent = iso3166_1.list.length;
+    document.getElementById("listCount").textContent = iso3166_1.list.length;
+
+    function renderRows(tbody, items) {
+        if (!items || items.length === 0) {
+            tbody.innerHTML = '<tr><td class="empty-row" colspan="4">未找到匹配的国家或地区</td></tr>';
+            return;
+        }
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.name}</td>
+                <td><span class="code-pill">${item.alpha2}</span></td>
+                <td><span class="code-pill">${item.alpha3}</span></td>
+                <td><span class="code-pill">${item.numeric}</span></td>
+            </tr>
+        `).join("");
+    }
+
+    // 模糊搜索 find(name)
+    const findInput = document.getElementById("findInput");
+    const findCode = document.getElementById("findCode");
+    const findTableBody = document.getElementById("findTableBody");
+
+    function runFind() {
+        const value = findInput.value.trim();
+        findCode.textContent = `iso3166_1.find(${JSON.stringify(value)});`;
+        renderRows(findTableBody, value ? iso3166_1.find(value) : []);
+    }
+    findInput.addEventListener("input", runFind);
+
+    // 精确查询 findOne / findByAlpha2 / findByAlpha3 / findByNumeric
+    const exactMethod = document.getElementById("exactMethod");
+    const exactInput = document.getElementById("exactInput");
+    const exactBtn = document.getElementById("exactBtn");
+    const exactCode = document.getElementById("exactCode");
+    const exactResult = document.getElementById("exactResult");
+
+    function runExact() {
+        const method = exactMethod.value;
+        const value = exactInput.value.trim();
+        exactCode.textContent = `iso3166_1.${method}(${JSON.stringify(value)});`;
+
+        if (!value) {
+            exactResult.innerHTML = '<p class="empty">请输入查询内容</p>';
+            return;
+        }
+
+        const result = iso3166_1[method](value);
+        exactResult.innerHTML = result ? `
+            <div class="result-grid">
+                <div><span>名称</span><strong>${result.name}</strong></div>
+                <div><span>Alpha-2</span><strong>${result.alpha2}</strong></div>
+                <div><span>Alpha-3</span><strong>${result.alpha3}</strong></div>
+                <div><span>Numeric</span><strong>${result.numeric}</strong></div>
+            </div>
+        ` : '<p class="empty">未找到匹配的国家或地区</p>';
+    }
+    exactBtn.addEventListener("click", runExact);
+    exactMethod.addEventListener("change", runExact);
+    exactInput.addEventListener("keydown", e => { if (e.key === "Enter") runExact(); });
+
+    // 全部列表 list
+    const listFilter = document.getElementById("listFilter");
+    const listTableBody = document.getElementById("listTableBody");
+
+    function renderList() {
+        const value = listFilter.value.trim();
+        renderRows(listTableBody, value ? iso3166_1.find(value) : iso3166_1.list);
+    }
+    listFilter.addEventListener("input", renderList);
+
+    // 初始化页面状态
+    runFind();
+    runExact();
+    renderList();
+</script>
+</body>
+</html>

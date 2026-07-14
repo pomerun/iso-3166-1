@@ -5,6 +5,8 @@
 
 > 国家或地区 ISO 3166-1 代码
 
+[在线示例页面](https://pomerun.github.io/iso-3166-1)
+
 ## 支持环境
 - Node.js >= 21
 - Chrome >= 117
